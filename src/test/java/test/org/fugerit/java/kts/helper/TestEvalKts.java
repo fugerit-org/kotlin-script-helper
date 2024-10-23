@@ -2,6 +2,7 @@ package test.org.fugerit.java.kts.helper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fugerit.java.core.cfg.ConfigException;
+import org.fugerit.java.core.function.SafeFunction;
 import org.fugerit.java.core.lang.helpers.ClassHelper;
 import org.fugerit.java.kts.helper.EvalKts;
 import org.fugerit.java.kts.helper.EvalKtsWithJsonDataModel;
@@ -11,22 +12,30 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Slf4j
 class TestEvalKts {
 
     private EvalKts evalKts = new EvalKtsWithJsonDataModel();
 
-    @Test
-    void testEvalkts() throws IOException {
+    private String testWorkerSimpleScript(Function<Reader, Object> evalFun) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(ClassHelper.loadFromDefaultClassLoader( "kts/sample-1.kts" ))) {
-            Object result = evalKts.evalKts( reader );
+            Object result = evalFun.apply( reader );
             String xml = result.toString();
             log.info( "xml : \n{}", xml );
-            Assertions.assertNotNull( xml );
+            return xml;
         }
+    }
+
+    @Test
+    void testEvalkts() throws IOException {
+        Assertions.assertNotNull( this.testWorkerSimpleScript( r -> this.evalKts.evalKts( r ) ) );
+        Assertions.assertNotNull( this.testWorkerSimpleScript( r -> SafeFunction.get( () -> this.evalKts.evalKtsEx( r ) ) ) );
     }
 
     @Test
