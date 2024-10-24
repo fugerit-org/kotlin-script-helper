@@ -1,5 +1,7 @@
 # Kotlin Language Script Helper
 
+NOTE: *This repository is being archived as the more generic <https://github.com/fugerit-org/fj-script-helper/> has been created*
+
 This project provides just a convenient interface for evaluating kotlin script. (Actually it can be used for any kind of script).
 
 [![Keep a Changelog v1.1.0 badge](https://img.shields.io/badge/changelog-Keep%20a%20Changelog%20v1.1.0-%23E05735)](CHANGELOG.md)
